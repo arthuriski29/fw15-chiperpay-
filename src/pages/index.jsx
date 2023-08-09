@@ -6,14 +6,14 @@ import { IoCallOutline } from 'react-icons/io5'
 import { RxLockClosed } from 'react-icons/rx'
 import { HiOutlineDownload } from 'react-icons/hi'
 
-import loginVector from './assets/image/login-vector.png'
-import phone1 from './assets/image/png-phone.png'
-import phone2 from './assets/image/png-phone2.png'
-import partners1 from './assets/image/partners1.svg'
-import partners2 from './assets/image/partners2.svg'
-import partners3 from './assets/image/partners3.svg'
-import partners4 from './assets/image/partners4.svg'
-import profile2 from './assets/image/profile-2.png'
+import loginVector from '../assets/image/login-vector.png'
+import phone1 from '../assets/image/png-phone.png'
+import phone2 from '../assets/image/png-phone2.png'
+import partners1 from '../assets/image/partners1.svg'
+import partners2 from '../assets/image/partners2.svg'
+import partners3 from '../assets/image/partners3.svg'
+import partners4 from '../assets/image/partners4.svg'
+import profile2 from '../assets/image/profile-2.png'
 
 
 function LandingPage() {

@@ -1,4 +1,6 @@
 import React from 'react'
+import { withIronSessionSsr } from "iron-session/next";
+
 
 import { RxDashboard } from 'react-icons/rx';
 import { IoIosLogOut } from 'react-icons/io';
@@ -9,20 +11,51 @@ import { BsPencilSquare } from 'react-icons/bs';
 import Image from 'next/image'
 import Header from '@/components/Header';
 
-import profile from '.././assets/image/profile-1.jpg'
+import profile from '../../assets/image/profile-1.jpg'
 
-import transaction1 from '.././assets/image/transaction1.png'
-import transaction2 from '.././assets/image/transaction2.png'
-import transaction3 from '.././assets/image/transaction3.png'
-import transaction4 from '.././assets/image/transaction4.png'
+import transaction1 from '../../assets/image/transaction1.png'
+import transaction2 from '../../assets/image/transaction2.png'
+import transaction3 from '../../assets/image/transaction3.png'
+import transaction4 from '../../assets/image/transaction4.png'
 import Link from 'next/link';
 import PinInput from '@/components/PinInput';
+import cookieConfig from '@/helper/cookieConfig';
+import axios from 'axios';
 
-function Profile() {
+export const getServerSideProps = withIronSessionSsr(
+  async function getServerSideProps({ req, res }) {
+    const token = req.session?.token;
+
+    if (!token) {
+      res.setHeader("location", "/auth/login");
+      res.statusCode = 302;
+      res.end();
+      return {
+        props:{},
+      };
+    }
+
+    const {data} = await axios.get('https://cute-lime-goldfish-toga.cyclic.app/profile', {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+
+    return {
+      props: {
+        token,
+        user: data.results
+      },
+    };
+  },
+  cookieConfig
+);
+
+function Profile({token, user}) {
   return (
-    <div className='h-screen bg-[#ffff]'>
+    <div className='h-[100vh] bg-[#ffff]'>
       <Header/>
-      <div className='flex h-[70%] mt-10 mb-10 gap-8'>
+      <div className='flex h-[80%] mt-10 mb-10 gap-8'>
         <div className='flex flex-col justify-between text-black w-[18%] min-w-[250px] bg-[#f5f5f5] ml-20 py-8 px-[5%] rounded-lg shadow-xl'>
           <div className='flex flex-col items-left gap-14 w-full'>
             <Link href='/home' className='flex gap-6'>
@@ -68,15 +101,29 @@ function Profile() {
                 width="80" 
                 height="80"
               />
+              {/* <Image alt="profile-pict" 
+                width="80" 
+                height="80" src={user.picture.startsWith('https') ? user.picture : `${import.meta.process.env.NODE_ENV}/uploads/${user.picture}`} /> */}
+              {/* {token ? 
+              <Image alt="profile-pict" 
+                width="80" 
+                height="80" src={user.picture} />
+              :
+              <Image src={profile} 
+                alt="profile-1" 
+                width="80" 
+                height="80"
+              /> 
+              } */}
             </div>
             <div className='flex relative items-center'>
               <BsPencilSquare className="absolute ml-2 text-[#9CA3AF]" alt="Notes Icon" />
               <button className='border-none flex-1 w-full pl-[30px]' type="text"> Edit</button> 
             </div>
-            <div className='text-[24px] font-bold'>Robert Chandler</div>
-            <div className='text-[##7A7886]'>+62 813-9387-7946</div>
+            <div className='text-[24px] font-bold'>{token ? user.username : `Robert Chandler`}</div>
+            <div className='text-[##7A7886]'> {token ? user.phone : `+62 813-9387-7946`}</div>
           </div>
-          <div className='flex flex-col gap-4'>
+          <div className='flex flex-col gap-4 h-[70%] justify-center'>
             <Link href='/profile/personal-information' className='w-[433px] h-[64px] hover:bg-[#F59376] border-solid rounded-xl bg-[#E2D3C5]'>
               <div className='flex justify-between h-full items-center px-5'>
                 <div className='font-bold text-[16px]'>Personal Information</div>

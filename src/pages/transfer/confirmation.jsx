@@ -9,10 +9,10 @@ import { BsPencilSquare } from 'react-icons/bs';
 import Image from 'next/image'
 import Header from '@/components/Header';
 
-import transaction1 from '.././assets/image/transaction1.png'
-import transaction2 from '.././assets/image/transaction2.png'
-import transaction3 from '.././assets/image/transaction3.png'
-import transaction4 from '.././assets/image/transaction4.png'
+import transaction1 from '../../assets/image/transaction1.png'
+import transaction2 from '../../assets/image/transaction2.png'
+import transaction3 from '../../assets/image/transaction3.png'
+import transaction4 from '../../assets/image/transaction4.png'
 import Link from 'next/link';
 import PinInput from '@/components/PinInput';
 

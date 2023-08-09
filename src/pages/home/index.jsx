@@ -9,19 +9,27 @@ import { HiOutlineArrowDown, HiOutlineArrowUp, HiPlus, HiUser } from 'react-icon
 import Image from 'next/image'
 import Header from '@/components/Header';
 
-import profile from '.././assets/image/profile-1.jpg'
-import transaction1 from '.././assets/image/transaction1.png'
-import transaction2 from '.././assets/image/transaction2.png'
-import transaction3 from '.././assets/image/transaction3.png'
-import transaction4 from '.././assets/image/transaction4.png'
+import profile from '../../assets/image/profile-1.jpg'
+import transaction1 from '../../assets/image/transaction1.png'
+import transaction2 from '../../assets/image/transaction2.png'
+import transaction3 from '../../assets/image/transaction3.png'
+import transaction4 from '../../assets/image/transaction4.png'
+import graphImage from '../../assets/image/graph.png'
+
+
 import Link from 'next/link';
 
 
 function Home() {
+  // const router = useRouter()
+  // const doLogout = async () => {
+  //   await axios.get('/api/logout')
+  //   router.replace('/auth/login')
+  // }
   return (
-    <div className='h-screen bg-[#ffff]'>
+    <div className='h-[100vh] bg-[#ffff]'>
       <Header/>
-      <div className='flex h-[70%] mt-10 mb-10 gap-8'>
+      <div className='flex h-[80%] mt-10 mb-10 gap-8'>
         <div className='flex flex-col justify-between text-black w-[18%] min-w-[250px] bg-[#f5f5f5] ml-20 py-8 px-[5%] rounded-lg shadow-xl'>
           <div className='flex flex-col items-left gap-14 w-full'>
             <div className='flex gap-6 text-accent'>
@@ -52,12 +60,12 @@ function Home() {
             </Link>
             
           </div>
-          <div className='flex gap-6'>
+          <button onClick={() => window.my_modal_5.showModal()} className='flex gap-6'>
               <div className='text-[25px]'>
                 <IoIosLogOut/>
               </div>
               <div>Logout</div>
-          </div>
+          </button>
         </div>
         <div className='flex flex-col w-[80%] justify-between mr-20 gap-6'>
           <div className='flex justify-between h-[30%] px-10 py-8 text-white bg-accent rounded-lg shadow-2xl'>
@@ -78,8 +86,8 @@ function Home() {
             </div>
           </div>
           <div className='flex gap-6 h-[70%] justify-between'>
-            <div className='flex-1 rounded-lg shadow-xl bg-[#E4C5AA] text-black px-10 py-10'>
-              <div className='flex justify-between'>
+            <div className='flex-1 flex flex-col justify-between rounded-lg shadow-xl bg-[#E4C5AA] text-black px-10 py-10'>
+              <div className='flex justify-between h-[30%]'>
                 <div className='flex flex-col gap-2'>
                   <HiOutlineArrowUp className='text-[#1EC05F]'/>
                   <div className='text-md'>Income</div>
@@ -91,14 +99,22 @@ function Home() {
                   <div className='font-black text-[15px]'>Rp1.560.000</div>
                 </div>
               </div>
-              <div></div>
+              <div className='flex-1 flex items-center w-full justify-center h-full'>
+                <Image
+                  src={graphImage}
+                  className='max-h-[100%] max-w-[80%]'
+                  width='500'
+                  height='500'
+                  alt='graph-image'
+                />
+              </div>
             </div>
             <div className='flex flex-col flex-1 rounded-lg shadow-xl bg-[#E4C5AA] px-10 py-10 justify-between h-full text-black'>
               <div className='flex justify-between items-center'>
                 <div className='font-bold text-[22px]'>Transaction History</div>
                 <Link href='/history' className='font-bold hover:text-[#F0592C]'>See All</Link>
               </div>
-              <div className='flex flex-col gap-6 justify-between'>
+              <div className='flex h-full flex-col gap-6 justify-center'>
                 <div className='flex flex-shrink justify-between items-center'>
                   <div className='flex-1'>
                     <Image
@@ -191,6 +207,22 @@ function Home() {
             </form>
           </div>
           <label className="modal-backdrop" htmlFor="modal-topup">Close</label>
+          <dialog id="my_modal_5" className="modal modal-bottom sm:modal-middle ">
+          <form method="dialog" className="modal-box bg-white ">
+            <h3 className="font-bold text-lg">Log Out</h3>
+            <p className="py-4">Are you sure you want to logout?</p>
+            <div className="modal-action">
+              <Link href='auth/logout'>
+              <button
+                type="button"
+                className="btn btn-error"
+              >
+                Ok
+              </button></Link>
+              <button className="btn">Close</button>
+            </div>
+          </form>
+        </dialog>
         </div>
     </div>
   )

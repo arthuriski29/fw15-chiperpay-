@@ -1,13 +1,30 @@
-import Image from 'next/image'
-import React from 'react'
-import { HiLockClosed } from 'react-icons/hi'
-import loginImage from '.././assets/image/login-image.png'
-import loginVector from '.././assets/image/login-vector.png'
-import Link from 'next/link'
+import { withIronSessionSsr } from 'iron-session/next';
+import cookieConfig from '@/helper/cookieConfig';
 
-function CreateNewPassword() {
-  return (
+
+import Link from 'next/link';
+import React from 'react';
+
+import Image from 'next/image'
+import loginImage from '../../assets/image/login-image.png'
+import loginVector from '../../assets/image/login-vector.png'
+import PinInput from '@/components/PinInput';
+import { AiOutlineCheck } from 'react-icons/ai'
+import http from '@/helper/http';
+import { useRouter } from 'next/router';
+
+function CreatePinStatus() {
+  const router = useRouter()
+  const [loading, setLoading] = React.useState(false)
+  const statusOk = ()=> {
+    setTimeout(()=>{
+      setLoading(true)
+    },700)
+    setLoading(true)
+    router.push('/home')
     
+  }
+  return (
     <>
       <section className='flex h-screen'>
         <div className='overflow-hidden relative md:w-[60%] min-h-screen hidden md:flex bg-[#F0592C] justify-center items-center'>
@@ -39,32 +56,17 @@ function CreateNewPassword() {
         </div>
         <div className='w-[40%] bg-[#FBE0D8] flex max-[768px]:flex-1 h-screen justify-center items-center'>
           <div className='h-[80%] max-[1022px]:w-[276px] min-[1023px]:w-[60%] max-[768px]:w-[80%] flex flex-col justify-center items-start gap-8 text-black'>
+            <AiOutlineCheck className='text-[#F0592C]' width='100' height='100'/>
             <div className='font-bold text-[24px] text-left'>
-              Did You Forgot Your Password?
-              Don&rsquo;t Worry, You Can Reset Your
-              Password In a Minutes.
+            Your PIN Was Successfully Created
             </div>
             <div>
-              To reset your password, you must type your e-mail and we will send a link to your email and you will be directed to the reset password screens.
-            </div>
+            Your PIN was successfully created and you can now access all the features in FazzPay.</div>
             <div className='w-full mt-8'>
-              <form className='flex flex-col gap-4'>
-                <div className='flex flex-col justify-center gap-6'>
-                  <div className='flex items-center'>
-                    <HiLockClosed className='absolute ml-4 text-[#9CA3AF]' alt="Password Icon"/>
-                    <input className='input input-bordered border-primary flex-1 w-full pl-[50px] bg-[#FBE0D8]' type='password' name='password' placeholder='Create new password'/>
-                  </div>
-                  <div className='flex items-center'>
-                    <HiLockClosed className='absolute ml-4 text-[#9CA3AF]' alt="Password Icon"/>
-                    <input className='input input-bordered border-primary flex-1 w-full pl-[50px] bg-[#FBE0D8]' type='password' name='password' placeholder='Confirm new password'/>
-                  </div>
-                </div>
-                <Link href='/auth/create-pin'>
-                  <button type='submit' className='btn bg-[#F0592C] text-white w-full mt-6'>
-                    Confirm
-                  </button>
-                </Link>
-              </form>
+            <button onClick={statusOk} disabled={loading} type='submit' className='btn bg-[#F0592C] text-white w-full mt-6'>
+              Go To Dashboard
+            {loading && <span className="loading loading-spinner loading-sm "></span>}
+            </button>
             </div>
           </div>
 
@@ -75,4 +77,4 @@ function CreateNewPassword() {
   )
 }
 
-export default CreateNewPassword
+export default CreatePinStatus

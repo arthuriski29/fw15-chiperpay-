@@ -1,12 +1,65 @@
+import { withIronSessionSsr } from "iron-session/next";
+
 import Link from 'next/link';
-import React from 'react';
+import React, { useState } from 'react';
+import { useRouter } from "next/router";
 
 import Image from 'next/image'
-import loginImage from '.././assets/image/login-image.png'
-import loginVector from '.././assets/image/login-vector.png'
+import loginImage from '../../assets/image/login-image.png'
+import loginVector from '../../assets/image/login-vector.png'
 import { HiOutlineMail, HiLockClosed } from 'react-icons/hi';
+import { FiEye, FiEyeOff } from 'react-icons/fi'
+import cookieConfig from "@/helper/cookieConfig";
+// import http from "@/helper/http";
+import axios from "axios";
+
+export const getServerSideProps = withIronSessionSsr(
+  async function getServerSideProps({ req, res }) {
+    const token = req.session?.token;
+
+    if (token) {
+      res.setHeader("location", "/home");
+      res.statusCode = 302;
+      res.end();
+      return {
+        prop: [token],
+      };
+    }
+
+    return {
+      props: {
+        token: null
+      },
+    };
+  },
+  cookieConfig
+);
+
 
 function Login() {
+  const [loading, setLoading] = React.useState(false)
+  const router = useRouter()
+  const doLogin = async (e)=> {
+    setLoading(true)
+    e.preventDefault()
+    const {value: email} = e.target.email
+    const {value: password} = e.target.password
+    const form = new URLSearchParams({
+      email, password
+    })
+    const { data } = await axios.post('http://localhost:3000/api/login', form.toString())
+    setLoading(false)
+    if(data?.results?.token){
+      router.push('/home')
+    }
+  }
+  const [iconEye, setIconEye] = React.useState(false)
+  const [typePassword, setTypePassword] = React.useState(false)
+  const handleInputPassword = () => {
+      setIconEye(!typePassword)
+      setTypePassword(!iconEye)
+  }
+
   return (
     
     <>
@@ -49,23 +102,54 @@ function Login() {
               Transfering money is easier than ever, you can access ChiperPay wherever you are. Desktop, laptop, mobile phone? we cover all of that for you!
             </div>
             <div className='w-full mt-8'>
-              <form className='flex flex-col gap-4'>
+              <form onSubmit={doLogin} className='flex flex-col gap-4'>
                 <div className='flex flex-col justify-center gap-12'>
                   <div className='flex items-center'>
                     <HiOutlineMail className="absolute ml-4 text-[#9CA3AF]" alt="Email Icon" />
-                    <input className='input input-bordered border-primary flex-1 w-full pl-[50px] bg-[#FBE0D8]' type='email' name='email' placeholder='Email' />
+                    <input 
+                      className='input input-bordered border-primary flex-1 w-full pl-[50px] bg-[#FBE0D8]' 
+                      type='email' 
+                      name='email'
+                      placeholder='Email' 
+                    />
                   </div>
-                  <div className='flex items-center'>
-                    <HiLockClosed className='absolute ml-4 text-[#9CA3AF]' alt="Password Icon"/>
-                    <input className='input input-bordered border-primary flex-1 w-full pl-[50px] bg-[#FBE0D8]' type='password' name='password' placeholder='Password'/>
+                  <div className='flex flex-col'>
+                    <div className='relative flex items-center'>
+                      <HiLockClosed className='absolute ml-4 text-[#9CA3AF]' alt="Password Icon"/>
+                      <input 
+                        className='input input-bordered border-primary flex-1 w-full pl-[50px] bg-[#FBE0D8]' 
+                        type={typePassword ? 'text' : 'password'}
+                        name='password' 
+                        placeholder='Create your password'
+                        // onChange={handleChange}
+                        // onBlur={handleBlur}
+                        // value={values.password}
+                      />
+                      <button type='button' onClick={handleInputPassword} className='absolute bottom-4 right-4 text-[#9CA3AF]'>
+                        {iconEye ? (
+                            <i className=''>
+                                <FiEye size={15} />
+                            </i>
+                        ) : (
+                            <i className=''>
+                                <FiEyeOff size={15} />
+                            </i>
+                        )}
+                      </button>
+                    </div>
+                    {/* {errors.password && touched.password && (
+                        <label className="label">
+                            <span className="label-text-left text-error text-xs ">{errors.password}</span>
+                        </label>
+                    )} */}
                   </div>
                 </div>
                 <Link href="/auth/forgot-password" className='text-end font-bold hover:text-primary'>Forgot Password?</Link>
-                <Link href='/home'>
-                  <button type='submit' className='btn bg-[#F0592C] text-white w-full mt-6'>
-                    Login
-                  </button>
-                </Link>
+                <button disabled={loading} type='submit' className='btn bg-[#F0592C] text-white w-full mt-6'>
+                  Login
+                {loading && <span className="loading loading-spinner loading-sm "></span>}
+                </button>
+                
               </form>
               <div className='text-center mt-8'>Don&rsquo;t have an account? Let&rsquo;s <Link href="/auth/register" className='hover:text-primary font-bold text-[#F0592C]'>Sign Up</Link></div>
             </div>

@@ -9,20 +9,20 @@ import { BsPencilSquare } from 'react-icons/bs';
 import Image from 'next/image'
 import Header from '@/components/Header';
 
-import profile from '.././assets/image/profile-1.jpg'
+import profile from '../../assets/image/profile-1.jpg'
 
-import transaction1 from '.././assets/image/transaction1.png'
-import transaction2 from '.././assets/image/transaction2.png'
-import transaction3 from '.././assets/image/transaction3.png'
-import transaction4 from '.././assets/image/transaction4.png'
+import transaction1 from '../../assets/image/transaction1.png'
+import transaction2 from '../../assets/image/transaction2.png'
+import transaction3 from '../../assets/image/transaction3.png'
+import transaction4 from '../../assets/image/transaction4.png'
 import Link from 'next/link';
 import PinInput from '@/components/PinInput';
 
 function PersonalInfo() {
   return (
-    <div className='h-screen bg-[#ffff]'>
+    <div className='h-[100vh] bg-[#ffff]'>
       <Header/>
-      <div className='flex h-[70%] mt-10 mb-10 gap-8'>
+      <div className='flex h-[80%] mt-10 mb-10 gap-8'>
         <div className='flex flex-col justify-between text-black w-[18%] min-w-[250px] bg-[#f5f5f5] ml-20 py-8 px-[5%] rounded-lg shadow-xl'>
           <div className='flex flex-col items-left gap-14 w-full'>
             <Link href='/home' className='flex gap-6'>
@@ -60,12 +60,12 @@ function PersonalInfo() {
               <div>Logout</div>
           </div>
         </div>
-        <div className='flex flex-col w-[80%] justify-between rounded-2xl shadow-2xl mr-20 px-10 py-10 gap-6 bg-[#f5f5f5] text-black'>
-          <div className='flex flex-col gap-6'>
+        <div className='flex flex-col w-[80%] h-full rounded-2xl shadow-2xl mr-20 px-10 py-10 gap-2 bg-[#f5f5f5] text-black'>
+          <div className='flex flex-col h-[20%] gap-6'>
             <div className='font-bold text-[18px]'>Personal Information</div>
             <div className='w-[342px]'>We got your personal information from the sign up proccess. If you want to make changes on your information, contact our support.</div>
           </div>
-          <div className='flex flex-col gap-4'>
+          <div className='flex flex-col h-[70%] justify-center gap-4'>
             <div className='w-full hover:bg-[#F59376] border-solid shadow-xl rounded-xl bg-[#f5f5f5]'>
               <div className='flex flex-col gap-3 h-full py-3 px-5'>
                 <div className='text-[16px] text-[background: #7A7886]'>First Name</div>

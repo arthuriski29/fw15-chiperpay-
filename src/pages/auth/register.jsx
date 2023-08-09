@@ -1,32 +1,102 @@
+import { withIronSessionSsr } from "iron-session/next";
+import cookieConfig from "@/helper/cookieConfig";
+
+
 import Link from 'next/link';
 import React from 'react';
+import * as Yup from 'yup';
+import { Formik } from "formik";
+import propTypes from 'prop-types';
 
+//assets
 import Image from 'next/image'
-import loginImage from '.././assets/image/login-image.png'
-import loginVector from '.././assets/image/login-vector.png'
+import loginImage from '../../assets/image/login-image.png'
+import loginVector from '../../assets/image/login-vector.png'
 import { HiOutlineMail, HiLockClosed, HiUser } from 'react-icons/hi';
+import { FiEye, FiEyeOff } from 'react-icons/fi'
+import { AiOutlineLoading3Quarters } from 'react-icons/ai'
+// import { useRouter } from 'next/router';
+import { useDispatch, useSelector } from 'react-redux';
+// import http from '@/helper/http';
+import axios from "axios";
+import { saveEmail } from "@/redux/reducers/auth";
+import { useRouter } from "next/router";
+
+
+export const getServerSideProps = withIronSessionSsr(
+  async function getServerSideProps({ req, res }) {
+    const token = req.session?.token
+
+    if (token) {
+      res.setHeader('location', '/home')
+      res.statusCode = 302
+      res.end()
+      return { prop: { token } }
+    }
+
+    return {
+      props: {
+        token: null,
+      },
+    }
+  },
+  cookieConfig
+)
+
+const validationSchema = Yup.object({
+  username: Yup.string().min(3, 'Must be 3 characters or more').required('Required'),
+  email: Yup.string().email('Email is invalid'),
+  password: Yup.string().min(6, 'Must be 6 characters minimum').required('Password is invalid'),
+})
+
+
 
 function Register() {
-  // const [errorMessage, setErrorMessage] = React.useState('')
-  // const [loading, setLoading] = React.useState(false)
+  const dispatch = useDispatch()
+  const router = useRouter()
+  const [errorMessage, setErrorMessage] = React.useState('')
+  const [isLoading, setLoading] = React.useState(false)
+  const [iconEye, setIconEye] = React.useState(false)
+  const [typePassword, setTypePassword] = React.useState(false)
+  const handleInputPassword = () => {
+      setIconEye(!typePassword)
+      setTypePassword(!iconEye)
+  }
   
-  // const processLogin = async(e) => {
-  //   e.preventDefault()
-  //   setErrorMessage('')
-  //   try {
-  //     const {value: username} = e.target.username
-  //     const {value: email} = e.target.email
-  //     const {value: password} = e.target.password
+   
+  const doRegister = async(values) => {
+    try {
+      // e.preventDefault()
+      console.log(values)
+      setErrorMessage('')
+      setLoading(true)
+      const username = values.username
+      const email = values.email
+      const password = values.password
+      // console.log(username)
+      // console.log(email)
+      // console.log(password)
+      const form = new URLSearchParams({username, email, password}).toString()
+      console.log(form)
+      const {data} = await axios.post('http://localhost:3000/api/register', form.toString())
+      
+      setLoading(false)
+      if(data?.results?.token){
+        router.push('/auth/create-pin')
+      }
 
-  //     const form = new URLSearchParams({username, email, password}).toString()
-  //     const {data} = await http().post('auth/register', form)
-  //   } catch (err) {
-  //     const message = err?.response?.data?.message
-  //     if(message?.includes('duplicate')){
-  //       setErrorMessage('Email Exists')
-  //     }
-  //   }
-  // }
+      dispatch(saveEmail(values.email))
+
+    } catch (err) {
+      const message = err?.response?.data?.message
+      if(message?.includes('duplicate')){
+        setErrorMessage('Email has been registered')
+      }
+      setLoading(false)
+    }finally{
+      setLoading(false)    
+    }
+  }
 
   return (
     
@@ -70,37 +140,122 @@ function Register() {
               Transfering money is easier than ever, you can access ChiperPay wherever you are. Desktop, laptop, mobile phone? we cover all of that for you!
             </div>
             <div className='w-full mt-8'>
-              <form className='flex flex-col gap-4'>
-                <div className='flex flex-col justify-center gap-6'>
-                  <div className='flex items-center'>
-                    <HiUser className="absolute ml-4 text-[#9CA3AF]" alt="First Name Icon" />
-                    <input className='input input-bordered border-primary flex-1 w-full pl-[50px] bg-[#FBE0D8]' type='text' name='firstName' placeholder='Enter your first name' />
-                  </div>
-                  <div className='flex items-center'>
-                    <HiUser className='absolute ml-4 text-[#9CA3AF]' alt="Last Name Icon"/>
-                    <input className='input input-bordered border-primary flex-1 w-full pl-[50px] bg-[#FBE0D8]' type='text' name='lastName' placeholder='Enter your last name'/>
-                  </div>
-                  <div className='flex items-center'>
-                    <HiOutlineMail className='absolute ml-4 text-[#9CA3AF]' alt="Email Icon"/>
-                    <input className='input input-bordered border-primary flex-1 w-full pl-[50px] bg-[#FBE0D8]' type='email' name='email' placeholder='Enter your e-mail'/>
-                  </div>
-                  <div className='flex items-center'>
-                    <HiLockClosed className='absolute ml-4 text-[#9CA3AF]' alt="Password Icon"/>
-                    <input className='input input-bordered border-primary flex-1 w-full pl-[50px] bg-[#FBE0D8]' type='password' name='password' placeholder='Create your password'/>
-                  </div>
-                </div>
-                <Link href='/auth/login'>
-                  <button type='submit' className='btn bg-[#F0592C] text-white w-full mt-6'>
-                    Sign Up
-                  </button>
-                </Link>
-              </form>
+              <Formik
+                  initialValues={{
+                      username:'',
+                      email: '',
+                      password: ''
+                  }}
+                  validationSchema={validationSchema}
+                  onSubmit={doRegister}
+              >
+                  {({
+                    values,
+                    errors,
+                    touched,
+                    handleChange,
+                    handleBlur,
+                    handleSubmit
+                  }) => (
+                    <form onSubmit={handleSubmit} className='flex flex-col gap-4' autoComplete="off">
+                      {errorMessage &&
+                          (<div>
+                              <div className="alert alert-error danger text-[11px]">{errorMessage}</div>
+                          </div>)}
+                      <div className='flex flex-col justify-center gap-6'>
+                        <div className='flex flex-col'>
+                          <div className='flex items-center'>
+                            <HiUser className="absolute ml-4 text-[#9CA3AF]" alt="First Name Icon" />
+                            <input 
+                              className='input input-bordered border-primary flex-1 w-full pl-[50px] bg-[#FBE0D8]' 
+                              type='text' 
+                              name='username' 
+                              placeholder='Enter your username'
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              value={values.username}
+                            />
+                          </div>
+                          <div>
+                            {errors.username && touched.username &&
+                                (<label className="label">
+                                    <span className="text-error text-xs py-0">{errors.username}</span>
+                                </label>
+                                )}
+                          </div>
+                        </div>
+                        <div className='flex flex-col'>
+                          <div className='flex items-center'>
+                            <HiOutlineMail className='absolute ml-4 text-[#9CA3AF]' alt="Email Icon"/>
+                            <input 
+                              className='input input-bordered border-primary flex-1 w-full pl-[50px] bg-[#FBE0D8]' 
+                              type='email' 
+                              name='email' 
+                              placeholder='Enter your e-mail'
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              value={values.email}
+                            />
+                          </div>
+                          <div>
+                            {errors.email && touched.email &&
+                              (<label className="label">
+                                  <span className="text-error text-xs py-0">{errors.email}</span>
+                              </label>
+                              )}
+                
+                          </div>
+                        </div>
+                        <div className='flex flex-col'>
+                          <div className='relative flex items-center'>
+                            <HiLockClosed className='absolute ml-4 text-[#9CA3AF]' alt="Password Icon"/>
+                            <input 
+                              className='input input-bordered border-primary flex-1 w-full pl-[50px] bg-[#FBE0D8]' 
+                              type={typePassword ? 'text' : 'password'}
+                              name='password' 
+                              placeholder='Create your password'
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              value={values.password}
+                            />
+                            <button type='button' onClick={handleInputPassword} className='absolute bottom-4 right-4 text-[#9CA3AF]'>
+                              {iconEye ? (
+                                  <i className=''>
+                                      <FiEye size={15} />
+                                  </i>
+                              ) : (
+                                  <i className=''>
+                                      <FiEyeOff size={15} />
+                                  </i>
+                              )}
+                            </button>
+                          </div>
+                          {errors.password && touched.password && (
+                              <label className="label">
+                                  <span className="label-text-left text-error text-xs ">{errors.password}</span>
+                              </label>
+                          )}
+                        </div>
+                      </div>
+                        <button type='submit' className='btn bg-[#F0592C] text-white w-full mt-6'>
+                          Sign Up
+                        </button>
+                    </form>
+                  )}
+              </Formik>
               <div className='text-center mt-8'>Already have an account? Let&rsquo;s <Link href="/auth/login" className='hover:text-primary font-bold text-[#F0592C]'>Login</Link></div>
             </div>
           </div>
 
         </div>
-
+        <input type="checkbox" id="loading" className="modal-toggle" defaultChecked={isLoading} />
+        <div className="modal">
+            <div className="modal-box bg-transparent shadow-none">
+                <div className='justify-center flex '>
+                    <AiOutlineLoading3Quarters className='animate-spin ' color='white' size={60} />
+                </div>
+            </div>
+        </div>
       </section>
     </>
   )

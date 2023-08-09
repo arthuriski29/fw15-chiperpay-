@@ -1,18 +1,78 @@
+import { withIronSessionSsr } from 'iron-session/next';
+import cookieConfig from '@/helper/cookieConfig';
+
+
 import Link from 'next/link';
 import React from 'react';
 
 import Image from 'next/image'
-import loginImage from '.././assets/image/login-image.png'
-import loginVector from '.././assets/image/login-vector.png'
+import loginImage from '../../assets/image/login-image.png'
+import loginVector from '../../assets/image/login-vector.png'
 import PinInput from '@/components/PinInput';
+import http from '@/helper/http';
+import { useRouter } from 'next/router';
 
-function CreatePin() {
-  const [showAlert, setShowAlert] = React.useState(false)
-  const changedPin = (value)=> {
-    if(value.length === 6){
-      setShowAlert(true)
-    }else{
-      setShowAlert(false)
+export const getServerSideProps = withIronSessionSsr(
+  async function getServerSideProps({ req, res }) {
+    const token = req.session?.token
+
+    if (!token) {
+      res.setHeader('location', '/')
+      res.statusCode = 302
+      res.end()
+      return {
+        prop: {},
+      }
+    }
+    const { data } = await http(token).get('/profile')
+
+    return {
+      props: {
+        token,
+        user: data.results,
+      },
+    }
+  },
+  cookieConfig
+)
+
+function CreatePin({user}) {
+  const email = user.email
+  const router = useRouter()
+  const [pin, setPin] = React.useState(0)
+  const [loading, setLoading] = React.useState(false)
+  const [errorMessage, setErrorMessage] = React.useState('')
+  const [successMessage, setSuccessMassage] = React.useState(false)
+
+  const doCreatePin = async (e) => {
+    try {
+      e.preventDefault()
+
+      setErrorMessage('')
+      setSuccessMassage('')
+      setLoading(true)
+
+      const form = new URLSearchParams({
+        email,
+        pin,
+      }).toString()
+
+      const { data } = await http().post('/auth/set-pin', form)
+      if (data.success === false) {
+        setErrorMessage('Create pin failed, try again')
+        setLoading(false)
+      }
+      if (data.success === true) {
+        router.push('/auth/create-pin-status')
+        setLoading(false)
+      }
+    } catch (error) {
+      const message = error?.response?.data.message
+      if (message?.includes('Internal')) {
+        setErrorMessage('Internal Server Error')
+      }
+    } finally {
+      setLoading(false)
     }
   }
   return (
@@ -55,14 +115,12 @@ function CreatePin() {
             <div>
               Create 6 digits pin to secure all your money and your data in chiperPay app. Keep it secret and don&rsquo;t tell anyone about your chiperPay account password and the PIN.            </div>
             <div className='w-full mt-8'>
-              <form className='flex flex-col gap-4'>
-                <PinInput onChangePin={changedPin}/>
-                {showAlert && <div className='border-b-[2px] border-[#2CAD7D] shadow-lg shadow-[#93C961] max-w-md'></div>}
-                <Link href='/auth/login'>
-                  <button type='submit' className='btn bg-[#F0592C] text-white w-full mt-6'>
-                    Confirm
-                  </button>
-                </Link>
+              <form onSubmit={doCreatePin} className='flex flex-col gap-4'autoComplete="off">
+                <PinInput onChangePin={setPin}/>
+                {/* {showAlert && <div className='border-b-[2px] border-[#2CAD7D] shadow-lg shadow-[#93C961] max-w-md'></div>} */}
+                <button type='submit' className='btn bg-[#F0592C] text-white w-full mt-6'>
+                  Confirm
+                </button>
               </form>
             </div>
           </div>
