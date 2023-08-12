@@ -10,14 +10,20 @@ const transfer = createSlice({
   name: "transfer",
   initialState,
   reducers: {
-      saveEmail: (state, action) => {
-         state.email = action.payload
+      setRecipient: (state, action) =>{
+          state.user = action.payload;
       },
-      clearTransferState: () => {
-      return initialState
+      setAmount: (state, action) =>{
+          state.amount = action.payload;
       },
-  },
+      setNote: (state, action) =>{
+          state.note = action.payload;
+      },
+      clearTransferState: () =>{
+          return initialState;
+      },
+  }
 });
 
-export const {saveEmail, clearTransferState,} = transfer.actions;
+export const {setRecipient, setAmount, setNote, clearTransferState } = transfer.actions;
 export default transfer.reducer;
