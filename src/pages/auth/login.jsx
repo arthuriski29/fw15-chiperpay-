@@ -1,7 +1,7 @@
 import { withIronSessionSsr } from "iron-session/next";
 
 import Link from 'next/link';
-import React, { useState } from 'react';
+import React from 'react';
 import { useRouter } from "next/router";
 
 import Image from 'next/image'
@@ -37,8 +37,10 @@ export const getServerSideProps = withIronSessionSsr(
 
 
 function Login() {
-  const [loading, setLoading] = React.useState(false)
   const router = useRouter()
+  const [loading, setLoading] = React.useState(false)
+  const [iconEye, setIconEye] = React.useState(false)
+  const [typePassword, setTypePassword] = React.useState(false)
   const doLogin = async (e)=> {
     setLoading(true)
     e.preventDefault()
@@ -47,14 +49,13 @@ function Login() {
     const form = new URLSearchParams({
       email, password
     })
-    const { data } = await axios.post('http://localhost:3000/api/login', form.toString())
+    const { data } = await axios.post('/api/login', form.toString())
     setLoading(false)
     if(data?.results?.token){
       router.push('/home')
     }
   }
-  const [iconEye, setIconEye] = React.useState(false)
-  const [typePassword, setTypePassword] = React.useState(false)
+  
   const handleInputPassword = () => {
       setIconEye(!typePassword)
       setTypePassword(!iconEye)
