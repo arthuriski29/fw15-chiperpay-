@@ -43,6 +43,7 @@ function CreatePin({user}) {
   const [loading, setLoading] = React.useState(false)
   const [errorMessage, setErrorMessage] = React.useState('')
   const [successMessage, setSuccessMassage] = React.useState(false)
+  
 
   const doCreatePin = async (e) => {
     try {
@@ -63,8 +64,8 @@ function CreatePin({user}) {
         setLoading(false)
       }
       if (data.success === true) {
-        router.push('/auth/create-pin-status')
         setLoading(false)
+        router.push('/auth/create-pin-status')
       }
     } catch (error) {
       const message = error?.response?.data.message
@@ -118,8 +119,9 @@ function CreatePin({user}) {
               <form onSubmit={doCreatePin} className='flex flex-col gap-4'autoComplete="off">
                 <PinInput onChangePin={setPin}/>
                 {/* {showAlert && <div className='border-b-[2px] border-[#2CAD7D] shadow-lg shadow-[#93C961] max-w-md'></div>} */}
-                <button type='submit' className='btn bg-[#F0592C] text-white w-full mt-6'>
+                <button disabled={loading} type='submit' className='btn bg-[#F0592C] text-white w-full mt-6'>
                   Confirm
+                  {loading && <span className="loading loading-spinner loading-sm "></span>}
                 </button>
               </form>
             </div>
