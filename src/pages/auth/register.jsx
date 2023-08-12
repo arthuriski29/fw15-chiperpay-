@@ -80,8 +80,8 @@ function Register() {
       console.log(form)
       const {data} = await axios.post('http://localhost:3000/api/register', form.toString())
       
-      setLoading(false)
       if(data?.results?.token){
+        setLoading(false)
         router.push('/auth/create-pin')
       }
 
@@ -237,8 +237,9 @@ function Register() {
                           )}
                         </div>
                       </div>
-                        <button type='submit' className='btn bg-[#F0592C] text-white w-full mt-6'>
+                        <button disabled={isLoading} type='submit' className='btn bg-[#F0592C] text-white w-full mt-6'>
                           Sign Up
+                          {isLoading && <span className="loading loading-spinner loading-sm "></span>}
                         </button>
                     </form>
                   )}
