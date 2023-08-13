@@ -1,4 +1,27 @@
+# chiperPay
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+
+# Display
+
+<table>
+  <tr>
+    <td valign="top">Landing Page<img src="src/assets/image/landing-page.png"/></td>
+    <td valign="top">Dashboard<img src="src/assets/image/dashboard.png"/></td>
+    <td valign="top">Login Page<img src="src/assets/image/login-page.png"/></td>
+    <td valign="top">Transfer Page<img src="src/assets/image/transfer.png"/></td>
+  </tr>
+</table>
+
+# About The Project
+
+A Web Wallet called chiperPay, for top up and transfer money to another user
+
+# Feature
+
+- Up-to-date and reliable Wallet transfer flow
+- Deposit your money and see the live update credit
+- And more
 
 ## Getting Started
 
@@ -21,6 +44,8 @@ You can start editing the page by modifying `pages/index.js`. The page auto-upda
 The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
 
 This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+
+
 
 ## Learn More
 
