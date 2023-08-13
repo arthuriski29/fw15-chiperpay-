@@ -7,6 +7,7 @@ import Sidebar from "@/components/Sidebar";
 import Footer from "@/components/Footer";
 import TransferStatus from "@/components/TransferStatus";
 import { useRouter } from "next/router";
+import Head from "next/head";
 
 export const getServerSideProps = withIronSessionSsr(
   async function getServerSideProps({ req, res }) {
@@ -26,14 +27,19 @@ function Status({ token }) {
     query: { id },
   } = useRouter();
   return (
-    <div className="h-screen bg-[#ffff]">
-      <Header token={token} />
-      <div className="flex h-[70%] mt-10 mb-10 gap-8">
-        <Sidebar token={token} transfer="text-accent" />
-        <TransferStatus token={token} id={id} />
+    <>
+      <Head>
+        <title>Transfer Status || chiperPay</title>
+      </Head>
+      <div className="h-screen bg-[#ffff]">
+        <Header token={token} />
+        <div className="flex h-[70%] mt-10 mb-10 gap-8">
+          <Sidebar token={token} transfer="text-accent" />
+          <TransferStatus token={token} id={id} />
+        </div>
+        <Footer />
       </div>
-      <Footer />
-    </div>
+    </>
   );
 }
 

@@ -7,6 +7,7 @@ import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
 import HistoryTransaction from "@/components/HistoryTransaction";
 import Footer from "@/components/Footer";
+import Head from "next/head";
 
 export const getServerSideProps = withIronSessionSsr(
   async function getServerSideProps({ req, res }) {
@@ -23,14 +24,19 @@ export const getServerSideProps = withIronSessionSsr(
 
 function History({ token }) {
   return (
-    <div className="h-screen bg-[#ffff]">
-      <Header token={token} />
-      <div className="flex h-[70%] mt-10 mb-10 gap-8">
-        <Sidebar token={token} dashboard="text-accent" />
-        <HistoryTransaction token={token} />
+    <>
+      <Head>
+        <title>Transaction History || chiperPay</title>
+      </Head>
+      <div className="h-screen bg-[#ffff]">
+        <Header token={token} />
+        <div className="flex h-[70%] mt-10 mb-10 gap-8">
+          <Sidebar token={token} dashboard="text-accent" />
+          <HistoryTransaction token={token} />
+        </div>
+        <Footer />
       </div>
-      <Footer />
-    </div>
+    </>
   );
 }
 

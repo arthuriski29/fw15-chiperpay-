@@ -8,6 +8,7 @@ import cookieConfig from "@/helper/cookieConfig";
 import Sidebar from "@/components/Sidebar";
 import Footer from "@/components/Footer";
 import TransferSelectReceiver from "@/components/TransferSelectReceiver";
+import Head from "next/head";
 
 export const getServerSideProps = withIronSessionSsr(
   async function getServerSideProps({ req, res }) {
@@ -24,14 +25,19 @@ export const getServerSideProps = withIronSessionSsr(
 
 function Transfer({ token }) {
   return (
-    <div className="h-screen bg-[#ffff]">
-      <Header token={token} />
-      <div className="flex h-[70%] mt-10 mb-10 gap-8">
-        <Sidebar token={token} transfer="text-accent" />
-        <TransferSelectReceiver token={token} />
+    <>
+      <Head>
+        <title>Transfer || chiperPay</title>
+      </Head>
+      <div className="h-screen bg-[#ffff]">
+        <Header token={token} />
+        <div className="flex h-[70%] mt-10 mb-10 gap-8">
+          <Sidebar token={token} transfer="text-accent" />
+          <TransferSelectReceiver token={token} />
+        </div>
+        <Footer />
       </div>
-      <Footer />
-    </div>
+    </>
   );
 }
 

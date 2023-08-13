@@ -7,11 +7,6 @@ import { setTransactions } from "@/redux/reducers/transactions";
 
 import defaultProfile from "../assets/image/defaultProfile.jpg";
 
-import transaction1 from "../assets/image/transaction1.png";
-import transaction2 from "../assets/image/transaction2.png";
-import transaction3 from "../assets/image/transaction3.png";
-import transaction4 from "../assets/image/transaction4.png";
-
 function HistoryTransaction({ token }) {
   const dispatch = useDispatch();
   const history = useSelector((state) => state.transactions.data);
