@@ -64,7 +64,9 @@ function Login() {
 
   return (
     <>
-      <Head>Login || chiperPay</Head>
+      <Head>
+        <title>Login || chiperPay</title>
+      </Head>
       <section className="flex h-screen">
         <div className="overflow-hidden relative md:w-[60%] min-h-screen hidden md:flex bg-[#F0592C] justify-center items-center">
           <div className="absolute mt-[110px] self-start w-[5000px] left-[-540px]">
