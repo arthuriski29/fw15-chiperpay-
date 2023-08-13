@@ -28,13 +28,13 @@ A Web Wallet called chiperPay, for Top up and Transfer money to another user
 ### 1. Clone the project
 
 ```bash
-  git clone https://github.com/arthuriski29/aceventure_apps
+  git clone https://github.com/arthuriski29/fw15-chiperpay-
 ```
 
 ## 2. Go to the project directory
 
 ```bash
-  cd aceventure_apps
+  cd fw15-chiperpay-
 ```
 
 ### 3. Run the development server:
