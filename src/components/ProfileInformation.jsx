@@ -10,6 +10,7 @@ import defaultProfile from "../assets/image/defaultProfile.jpg";
 
 import { BsPencilSquare } from "react-icons/bs";
 import { HiArrowRight } from "react-icons/hi";
+import http from "@/helper/http";
 
 function ProfileInformation({ token }) {
   const dispatch = useDispatch();
@@ -64,7 +65,7 @@ function ProfileInformation({ token }) {
     <div className="flex flex-col w-[80%] justify-between items-center rounded-2xl shadow-2xl mr-20 px-10 py-10 gap-6 bg-[#f5f5f5] text-black">
       <div className="flex flex-col gap-4 items-center">
         {pictureURI && (
-          <div className="rounded-lg overflow-hidden">
+          <div className="rounded-lg overflow-hidden w-20 h-20">
             <Image
               src={pictureURI}
               alt="selected-picture"
